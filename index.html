@@ -1,34 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Diwali</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP32 Firebase Data</title>
+  <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-database.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .data-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .data-card {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 </head>
-
 <body>
-    <div class="container">
-        <h1>Happy Diwali</h1>
-        <p>May this Diwali bring light, prosperity, and happiness to your life.</p>
-        <div class="diyas">
-            <img src="diya.png" alt="Diya" class="diya">
-            <img src="diya.png" alt="Diya" class="diya">
-            <img src="diya.png" alt="Diya" class="diya">
-        </div>
-        <div class="fireworks">
-            <div class="firework"></div>
-            <div class="firework"></div>
-            <div class="firework"></div>
-            <div class="firework"></div>
-            <div class="firework"></div>
-            <div class="firework"></div>
-        </div>
-    </div>
+  <h1>Real-Time ESP32 Data</h1>
+  <div id="dataContainer" class="data-container"></div>
 
-    <!-- Adding External JavaScript File -->
-    <script src="script.js"></script>
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "your-api-key",
+      authDomain: "your-auth-domain",
+      databaseURL: "your-database-url",
+      projectId: "your-project-id",
+      storageBucket: "your-storage-bucket",
+      messagingSenderId: "your-messaging-sender-id",
+      appId: "your-app-id"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Reference to the data node
+    const dataRef = firebase.database().ref("sensorData");
+
+    // Listen for real-time updates
+    dataRef.on("value", (snapshot) => {
+      const data = snapshot.val();
+      const container = document.getElementById("dataContainer");
+      container.innerHTML = `
+        <div class="data-card">
+          <h2>Temperature: ${data.temperature}°C</h2>
+          <h2>Humidity: ${data.humidity}%</h2>
+          <p>Timestamp: ${new Date(data.timestamp).toLocaleString()}</p>
+        </div>
+      `;
+    });
+  </script>
 </body>
-
 </html>
